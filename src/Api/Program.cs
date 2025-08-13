@@ -5,7 +5,6 @@ using Application.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure;
-using MediatR;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -85,11 +84,11 @@ if (useJwt)
 app.MapControllers();
 app.MapHealthChecks("/health");
 
-// Ensure indexes
+// Ensure collections & indexes
 using (var scope = app.Services.CreateScope())
 {
     var ctx = scope.ServiceProvider.GetRequiredService<Infrastructure.Mongo.MongoContext>();
-    await Infrastructure.Mongo.MongoIndexes.EnsureAsync(ctx);
+    await Infrastructure.Mongo.MongoIndexes.EnsureCollectionsAndIndexesAsync(ctx);
 }
 
 app.Run();
